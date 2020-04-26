@@ -6,27 +6,25 @@
 #include <map>
 #include <set>
 #include "../json-develop/single_include/nlohmann/json.hpp"
-
 #include "../DFA/DFA.h"
+#include "../NFA/NFA.h"
 
-using namespace std;
+#ifndef ENFA_H
+#define ENFA_H
 
-#ifndef NFA_H
-#define NFA_H
 
-string setToString(set<string> states);
-
-class NFA {
+class eNFA {
 private:
     vector<string> states;
     vector<char> alphabet;
     string startstate;
+    char epsilon;
     set<string> currentstates;
     vector<string> finalstates;
     map<string, map<char, set<string>>> transition;
 public:
 
-    NFA(string input);
+    eNFA(string input);
 
     bool checkInput(string& input);
 
@@ -38,6 +36,8 @@ public:
 
     DFA toDFA();
 
+    set<string> ECLOSE(set<string>& nstates);
 };
 
-#endif //NFA_H
+
+#endif //ENFA_H

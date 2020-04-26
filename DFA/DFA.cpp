@@ -1,9 +1,9 @@
-
-#include <iomanip>
 #include "DFA.h"
 
 DFA::DFA(vector<string> States, vector<char> Alphabet, map<string, map<char,string>> Transition, string Startstate, vector<string> Finalstates):
     states(States), alphabet(Alphabet), transition(Transition), startstate{Startstate}, finalstates(Finalstates), currentstate(startstate) {}
+
+
 
 
 
@@ -38,8 +38,8 @@ bool DFA::execute(string input) {
     return false;
 }
 
-void DFA::createDot() {
-    ofstream DotFile("DFA.dot");
+void DFA::createDot(string filename) {
+    ofstream DotFile(filename);
     DotFile << "Digraph {\nrankdir=LR\ninv[style=invisible]\ninv -> " << '"' << startstate << '"' << " [label=start]" << endl;
     DotFile << "node [shape = circle]\n";
     for (auto state:states) {
@@ -110,4 +110,38 @@ void DFA::createJson() {
     ofstream jsonFile("jsonDFA.json");
     jsonFile << std::setw(4) << j << std::endl;
     jsonFile.close();
+}
+
+DFA createProductDFA(DFA dfa1, DFA dfa2, type Type) {
+    vector<string> staten;
+    vector<string> finalstates;
+    vector<char> alphabet = dfa1.alphabet;
+    map<string, map<char, string>> transition;
+    for (auto state:dfa1.states) {
+        for (auto sta:dfa2.states) {
+            string newState = "(" + state + "," + sta + ")";
+            if (Type == doorsnede) {
+                if (dfa1.checkFinal(state) and dfa2.checkFinal(sta)) {
+                    finalstates.push_back(newState);
+                }
+            }
+            else if (Type == unie) {
+                if (dfa1.checkFinal(state) or dfa2.checkFinal(sta)) {
+                    finalstates.push_back(newState);
+                }
+            }
+            staten.push_back(newState);
+            map<char, string> empty_map;
+            transition.insert(make_pair(newState, empty_map));
+            for (auto symbol:alphabet) {
+                string trans1 = dfa1.transition.at(state).at(symbol);
+                string trans2 = dfa2.transition.at(sta).at(symbol);
+                string newTrans = "(" + trans1 + "," + trans2 + ")";
+                transition.at(newState).insert(make_pair(symbol, newTrans));
+            }
+        }
+    }
+    string startstate = "(" + dfa1.startstate + "," + dfa2.startstate + ")";
+
+    return DFA(staten, alphabet, transition, startstate, finalstates);
 }

@@ -3,4 +3,11 @@ project(FINITEAUTOMATES)
 
 set(CMAKE_CXX_STANDARD 14)
 
-add_executable(FA main.cpp DFA/DFA.h DFA/DFA.cpp json-develop/single_include/nlohmann/json.hpp NFA/NFA.cpp NFA/NFA.h)
+add_executable(indiv
+        main.cpp
+        DFA/DFA.h DFA/DFA.cpp
+        json-develop/single_include/nlohmann/json.hpp
+        NFA/NFA.cpp NFA/NFA.h
+        eNFA/eNFA.cpp eNFA/eNFA.h
+        TFA/TFA.cpp TFA/TFA.h
+        )

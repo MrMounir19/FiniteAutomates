@@ -4,23 +4,26 @@
 #include <cstdlib>
 #include <vector>
 #include <map>
+#include <set>
+#include <iomanip>
 #include "../json-develop/single_include/nlohmann/json.hpp"
+
 
 using namespace std;
 
-#ifndef NFA_H
-#define NFA_H
+#ifndef DFA_H
+#define DFA_H
 
 
 class DFA {
-private:
+public:
     vector<string> states;
     vector<char> alphabet;
     string startstate;
     string currentstate;
     vector<string> finalstates;
     map<string, map<char, string>> transition;
-public:
+
     DFA(vector<string> States, vector<char> Alphabet, map<string, map<char,string>> Transition, string Startstate, vector<string> Finalstates);
 
     DFA(string input);
@@ -31,11 +34,14 @@ public:
 
     bool execute(string input);
 
-    void createDot();
+    void createDot(string filename);
 
     void createJson();
 
 };
 
+enum type{unie, doorsnede};
+DFA createProductDFA(DFA dfa1, DFA dfa2, type Type);
 
-#endif //NFA_H
+
+#endif //DFA_H
