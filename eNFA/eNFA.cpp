@@ -1,5 +1,5 @@
-
 #include "eNFA.h"
+
 
 eNFA::eNFA(string input) {
     std::ifstream i(input);
@@ -12,6 +12,8 @@ eNFA::eNFA(string input) {
     //read epsilon
     string eps = j["eps"];
     epsilon = eps[0];
+    alphabet.push_back(epsilon);
+
     //lege map
     map<char, set<string>> empty_map;
     set<string> leeg;
@@ -25,7 +27,6 @@ eNFA::eNFA(string input) {
         if (state["starting"]) {startstate = state["name"];}
         if (state["accepting"]) {finalstates.push_back(state["name"]);}
         transition.insert(make_pair(state["name"], empty_map));
-        transition.at(state["name"]).insert(make_pair(epsilon, leeg));
     }
     //read transitions
     for (auto trans:j["transitions"]) {
@@ -38,6 +39,9 @@ eNFA::eNFA(string input) {
 
 bool eNFA::checkInput(string& input) {
     for (auto x:input) {
+        if (x == epsilon) {
+            goto out;
+        }
         for (auto y:alphabet) {
             if (x==y) {goto out;}
         }
@@ -139,7 +143,7 @@ DFA eNFA::toDFA() {
                     newState = {"DEAD"};
                 }
                 setDFAstates.insert(newState);
-                if (setDFAstates.size()>size) {
+                if (setDFAstates.size() > size) {
                     vectorDFAstates.push_back(newState);
                 }
             }
@@ -157,13 +161,12 @@ DFA eNFA::toDFA() {
             for (auto st:state) {
                 if (st == "DEAD") {
                     newState = {"DEAD"};
-                }
-                else {
+                } else {
                     set<string> trans = ECLOSE(transition.at(st).at(symbol));
                     newState.insert(trans.begin(), trans.end());
                 }
             }
-            if (newState.empty()) {newState={"DEAD"};}
+            if (newState.empty()) { newState = {"DEAD"}; }
             DFAtransition.at(setToString(state)).insert(make_pair(symbol, setToString(newState)));
         }
     }
@@ -181,7 +184,20 @@ DFA eNFA::toDFA() {
         end:;
     }
     set<string> startstates = ECLOSE(currentstates);
+
+
+
     //Creation DFA
     DFA D = DFA(DFAstates, alphabet, DFAtransition, setToString(startstates), finalStates);
     return D;
+}
+
+eNFA::eNFA(vector<string> States, vector<char> Alphabet, string Startstate, vector<string> Finalstates, map<string, map<char, set<string>>> Transition, char Epsilon) {
+       states = States;
+       alphabet = Alphabet;
+       startstate = Startstate;
+       finalstates = Finalstates;
+       transition = Transition;
+       epsilon = Epsilon;
+       currentstates.insert(startstate);
 }

@@ -10,4 +10,4 @@ add_executable(indiv
         NFA/NFA.cpp NFA/NFA.h
         eNFA/eNFA.cpp eNFA/eNFA.h
         TFA/TFA.cpp TFA/TFA.h
-        )
+        RE/RE.cpp RE/RE.h)

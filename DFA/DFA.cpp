@@ -43,8 +43,28 @@ void DFA::createDot(string filename) {
     DotFile << "Digraph {\nrankdir=LR\ninv[style=invisible]\ninv -> " << '"' << startstate << '"' << " [label=start]" << endl;
     DotFile << "node [shape = circle]\n";
     for (auto state:states) {
-        for (auto input:alphabet) {
-            DotFile << '"' << state << '"' << " -> " << '"' << transition.at(state).at(input) << '"' << " [label=" << input << "]\n";
+        if (state == "DEAD") {
+            DotFile << '"' << state << '"' << " -> " << '"' << "DEAD" << '"' << " [label=Σ]\n";
+        }
+        else {
+            bool check = true;
+            string temp;
+            for (auto input:alphabet) {
+                if (transition.at(state).at(input) != "DEAD") {
+                    temp += input;
+                    temp += ',';
+                    DotFile << '"' << state << '"' << " -> " << '"' << transition.at(state).at(input) << '"'
+                            << " [label=" << input << "]\n";
+                }
+                check = false;
+            }
+            if (!temp.empty() and !check) {
+                temp.pop_back();
+                DotFile << '"' << state << '"' << " -> " << '"' << "DEAD" << '"' << " [label=" << '"' << "Σ⋂{" << temp << "}" << '"' << "]\n";
+            }
+            else {
+                DotFile << '"' << state << '"' << " -> " << '"' << "DEAD" << '"' << " [label=Σ]\n";
+            }
         }
     }
     for (auto state:finalstates) {

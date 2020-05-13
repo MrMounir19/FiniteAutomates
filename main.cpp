@@ -2,8 +2,8 @@
 #include "NFA/NFA.h"
 #include "eNFA/eNFA.h"
 #include "TFA/TFA.h"
-
-
+#include "RE/RE.h"
+/*
 int main(int argc, char** argv) {
     if (string(argv[1]) == "ssc") {
         NFA A(argv[2]);
@@ -37,6 +37,19 @@ int main(int argc, char** argv) {
         DFA B(argv[3]);
         equalDFAs(A, B, argv[4]);
     }
+
+    return 0;
+}
+*/
+
+int main() {
+    eNFA A = createRE("loco", 'e');
+    A.execute("polla");
+    A.createDot();
+    DFA B = A.toDFA();
+    B.createDot("test.dot");
+
+
 
     return 0;
 }

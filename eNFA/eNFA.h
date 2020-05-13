@@ -37,6 +37,9 @@ public:
     DFA toDFA();
 
     set<string> ECLOSE(set<string>& nstates);
+
+    eNFA(vector<string> States, vector<char> Alphabet, string Startstate,
+         vector<string> Finalstates, map<string, map<char, set<string>>> Transition, char Epsilon);
 };
 
 
